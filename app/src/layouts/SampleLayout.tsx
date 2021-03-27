@@ -30,10 +30,10 @@ const SampleLayout = ({
 					<a>About</a>
 				</Link>{' '}
 				|{' '}
-				<Link href="/users">
-					<a>Users List</a>
+				<Link href="/sample">
+					<a>Category List</a>
 				</Link>{' '}
-				| <a href="/api/users">Users API</a>
+				| <a href="/api/category">Users API</a>
 			</nav>
 		</header>
 		{children}

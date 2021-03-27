@@ -1,14 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
-
-import { User } from 'src/interfaces'
+import { Category } from '@prisma/client'
 
 type Props = {
-	data: User
+	data: Category
 }
 
 const ListItem = ({ data }: Props) => (
-	<Link href="/users/[id]" as={`/users/${data.id}`}>
+	<Link href="/sample/[id]" as={`/sample/${data.id}`}>
 		<a>
 			{data.id}: {data.name}
 		</a>

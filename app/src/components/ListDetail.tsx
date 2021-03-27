@@ -1,15 +1,14 @@
 import * as React from 'react'
-
-import { User } from 'src/interfaces'
+import { Category } from '@prisma/client'
 
 type ListDetailProps = {
-	item: User
+	category: Category
 }
 
-const ListDetail = ({ item: user }: ListDetailProps) => (
+const ListDetail = ({ category }: ListDetailProps) => (
 	<div>
-		<h1>Detail for {user.name}</h1>
-		<p>ID: {user.id}</p>
+		<h1>Detail for {category.name}</h1>
+		<p>ID: {category.id}</p>
 	</div>
 )
 

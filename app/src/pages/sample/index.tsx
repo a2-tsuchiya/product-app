@@ -1,23 +1,24 @@
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
 
-import { User } from 'src/interfaces'
-import { sampleUserData } from 'utils/sample-data'
 import SampleLayout from 'src/layouts/SampleLayout'
 import List from 'src/components/List'
 
+import axios from 'axios'
+import { Category } from '@prisma/client'
+
 type Props = {
-	items: User[]
+	categories: Category[]
 }
 
-const WithStaticProps = ({ items }: Props) => (
+const WithStaticProps = ({ categories }: Props) => (
 	<SampleLayout title="Users List | Next.js + TypeScript Example">
-		<h1>Users List</h1>
+		<h1>Category List</h1>
 		<p>
 			Example fetching data from inside <code>getStaticProps()</code>.
 		</p>
-		<p>You are currently on: /users</p>
-		<List items={items} />
+		<p>You are currently on: /category</p>
+		<List categories={categories} />
 		<p>
 			<Link href="/">
 				<a>Go home</a>
@@ -30,8 +31,9 @@ export const getStaticProps: GetStaticProps = async () => {
 	// Example for including static props in a Next.js function component page.
 	// Don't forget to include the respective types for any props passed into
 	// the component.
-	const items: User[] = sampleUserData
-	return { props: { items } }
+	const res = await await axios.get<Category[]>('/category')
+	const categories = res.data
+	return { props: { categories } }
 }
 
 export default WithStaticProps

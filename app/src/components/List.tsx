@@ -1,16 +1,16 @@
 import * as React from 'react'
 import ListItem from 'src/components/ListItem'
-import { User } from 'src/interfaces'
+import { Category } from '@prisma/client'
 
 type Props = {
-	items: User[]
+	categories: Category[]
 }
 
-const List = ({ items }: Props) => (
+const List = ({ categories }: Props) => (
 	<ul>
-		{items.map((item) => (
-			<li key={item.id}>
-				<ListItem data={item} />
+		{categories.map((category) => (
+			<li key={category.id}>
+				<ListItem data={category} />
 			</li>
 		))}
 	</ul>

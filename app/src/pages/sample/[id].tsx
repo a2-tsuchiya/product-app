@@ -1,16 +1,16 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 
-import { User } from 'src/interfaces'
-import { sampleUserData } from 'utils/sample-data'
 import SampleLayout from 'src/layouts/SampleLayout'
 import ListDetail from 'src/components/ListDetail'
+import axios from 'axios'
+import { Category } from '@prisma/client'
 
 type Props = {
-	item?: User
+	category?: Category
 	errors?: string
 }
 
-const StaticPropsDetail = ({ item, errors }: Props) => {
+const StaticPropsDetail = ({ category, errors }: Props) => {
 	if (errors) {
 		return (
 			<SampleLayout title="Error | Next.js + TypeScript Example">
@@ -24,36 +24,49 @@ const StaticPropsDetail = ({ item, errors }: Props) => {
 	return (
 		<SampleLayout
 			title={`${
-				item ? item.name : 'User Detail'
+				category ? category.name : 'User Detail'
 			} | Next.js + TypeScript Example`}>
-			{item && <ListDetail item={item} />}
+			{category && <ListDetail category={category} />}
 		</SampleLayout>
 	)
 }
 
 export default StaticPropsDetail
 
+/**
+ * SSGのビルド時のみ呼ばれるライフサイクル
+ *  -- `getStaticProps`より前に実行される
+ *  -- 対応する動的パラメータを配列で渡す
+ */
 export const getStaticPaths: GetStaticPaths = async () => {
 	// Get the paths we want to pre-render based on users
-	const paths = sampleUserData.map((user) => ({
-		params: { id: user.id.toString() },
-	}))
+	const res = await axios.get<Category[]>(`/category`)
+	const data = res.data
+	const paths = data.map((d) => {
+		return {
+			params: { id: String(d.id) },
+		}
+	})
 
 	// We'll pre-render only these paths at build time.
 	// { fallback: false } means other routes should 404.
 	return { paths, fallback: false }
 }
 
-// This function gets called at build time on server-side.
-// It won't be called on client-side, so you can even do
-// direct database queries.
+/**
+ * SSGビルド時のみ呼ばれるライフサイクル
+ *  -- `getStaticPaths`より後に実行される
+ *  -- 引数には動的パラメータを含むコンテキストが渡される
+ * @param params
+ */
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	try {
 		const id = params?.id
-		const item = sampleUserData.find((data) => data.id === Number(id))
+		const res = await axios.get<Category>(`/category/${id}`)
+		const category = res.data
 		// By returning { props: item }, the StaticPropsDetail component
 		// will receive `item` as a prop at build time
-		return { props: { item } }
+		return { props: { category } }
 	} catch (err) {
 		return { props: { errors: err.message } }
 	}

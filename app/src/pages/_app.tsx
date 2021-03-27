@@ -7,6 +7,9 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
 
+import axios from 'axios'
+axios.defaults.baseURL = process.env.ENDPOINT
+
 /**
  * Global App Config
  * @see https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
