@@ -2,11 +2,9 @@
 
 Product App
 
-## Enviroment
+## Setup Next.js
 
-### Next.js
-
-#### Create Next-App
+### Create Next-App
 
 ```bash
 yarn create next-app --example with-typescript your-app-name
@@ -15,7 +13,7 @@ mkdir src
 mv pages/ src/pages/
 ```
 
-#### Module resolve
+### Module resolve
 
 ```javascript
 // next-env.d.ts
@@ -28,18 +26,19 @@ module.exports = {
 };
 ```
 
-#### Directory Structure
+### Directory Structure
 
 ```bash
 src
 ├── components
 ├── foundations
 ├── layouts
+├── interfaces
 ├── pages
 └── styles
 ```
 
-#### Pages Global Config
+### Pages Global Config
 
 ```bash
 # If it doesn't exist...
