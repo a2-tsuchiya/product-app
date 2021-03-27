@@ -66,6 +66,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			`${process.env.ENDPOINT}/category/${id}`
 		)
 		const category = res.data
+		console.log(category)
 		// By returning { props: item }, the StaticPropsDetail component
 		// will receive `item` as a prop at build time
 		return { props: { category } }

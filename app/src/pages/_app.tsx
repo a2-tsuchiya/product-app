@@ -7,6 +7,8 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
 
+// やっぱaxiosのbaseURLは設定したい。。
+
 /**
  * Global App Config
  * @see https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
