@@ -64,4 +64,13 @@ touch src/pages/_app.tsx src/pages/_document.tsx
 
 ## ORM (Prisma + AWS Aurora/MySQL)
 
+### Install
+
+```bash
+yarn add @prisma/client prisma
+npx prisma init
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
 ## API (Serverless Framework + AWS Lambda)
