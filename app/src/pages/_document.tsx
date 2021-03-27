@@ -3,9 +3,6 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheets } from '@material-ui/core/styles'
 import theme from 'src/styles/theme'
 
-import axios from 'axios'
-axios.defaults.baseURL = process.env.ENDPOINT
-
 /**
  * Server-side Rendering Only
  * @see https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
