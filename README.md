@@ -1,14 +1,31 @@
 # product-app
 
-Product App
+Next.js + TypeScript / Prisma + Serverless Framework
 
-## Setup Next.js
+## Skill Stack
+
+- FrontEnd
+  - Next.js
+  - React.js
+  - TypeScript
+  - Material-UI
+- MiddleEnd
+  - Prisma
+  - Serverless Framework
+  - AWS Lambda
+  - AWS API Gateway
+- BackEnd
+  - AWS Aurora/MySQL
+- Hosting
+  - Vercel
+
+## Framework (Next.js)
 
 ### Create Next-App
 
 ```bash
-yarn create next-app --example with-typescript your-app-name
-cd your-app-name
+yarn create next-app --example with-typescript app
+cd app
 mkdir src
 mv pages/ src/pages/
 ```
@@ -44,3 +61,7 @@ src
 # If it doesn't exist...
 touch src/pages/_app.tsx src/pages/_document.tsx
 ```
+
+## ORM (Prisma + AWS Aurora/MySQL)
+
+## API (Serverless Framework + AWS Lambda)
