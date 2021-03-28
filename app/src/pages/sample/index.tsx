@@ -31,9 +31,6 @@ export const getStaticProps: GetStaticProps = async () => {
 	// Example for including static props in a Next.js function component page.
 	// Don't forget to include the respective types for any props passed into
 	// the component.
-	// const res = await await axios.get<Category[]>(
-	// 	`${process.env.ENDPOINT}/category`
-	// )
 	const res = await axios.get<Category[]>('/category')
 	const categories = res.data
 	return { props: { categories } }

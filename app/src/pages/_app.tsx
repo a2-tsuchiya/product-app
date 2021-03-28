@@ -3,6 +3,8 @@ import 'src/styles/globals.css'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 
+import { Provider } from 'next-auth/client'
+
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
@@ -35,7 +37,9 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 			<ThemeProvider theme={theme}>
 				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
 				<CssBaseLine />
-				<Component {...pageProps} />
+				<Provider session={pageProps.session}>
+					<Component {...pageProps} />
+				</Provider>
 			</ThemeProvider>
 		</React.Fragment>
 	)
