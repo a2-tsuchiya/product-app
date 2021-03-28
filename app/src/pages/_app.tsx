@@ -8,6 +8,9 @@ import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
 
 // やっぱaxiosのbaseURLは設定したい。。
+import axios from 'axios'
+axios.defaults.baseURL =
+	'https://du4sfbtael.execute-api.ap-northeast-1.amazonaws.com/dev'
 
 /**
  * Global App Config
