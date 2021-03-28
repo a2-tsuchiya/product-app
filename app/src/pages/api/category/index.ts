@@ -1,12 +1,11 @@
 import axios from 'axios'
+axios.defaults.baseURL = process.env.ENDPOINT
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Category } from '@prisma/client'
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 	try {
-		const _res = await axios.get<Category[]>(
-			`${process.env.ENDPOINT}/category`
-		)
+		const _res = await axios.get<Category[]>('/category')
 		if (!Array.isArray(_res.data)) {
 			throw new Error('Cannot find category data')
 		}
