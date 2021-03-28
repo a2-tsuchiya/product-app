@@ -1,16 +1,19 @@
 import Link from 'next/link'
-import SampleLayout from 'src/layouts/SampleLayout'
+import PageHead from 'src/layouts/PageHead'
 
-const AboutPage = () => (
-	<SampleLayout title="About | Next.js + TypeScript Example">
-		<h1>About</h1>
-		<p>This is the about page</p>
-		<p>
-			<Link href="/">
-				<a>Go home</a>
-			</Link>
-		</p>
-	</SampleLayout>
-)
+const AboutPage = () => {
+	return (
+		<>
+			<PageHead title="ABOUT" />
+			<h1>About Page</h1>
+			<p>This is the about page</p>
+			<p>
+				<Link href="/">
+					<a>Go home</a>
+				</Link>
+			</p>
+		</>
+	)
+}
 
 export default AboutPage

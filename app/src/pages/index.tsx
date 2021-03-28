@@ -1,19 +1,17 @@
 import Link from 'next/link'
-import SampleLayout from 'src/layouts/SampleLayout'
+import PageHead from 'src/layouts/PageHead'
 
 const IndexPage = () => {
 	return (
-		<div>
-			<SampleLayout title="Home | Next.js + TypeScript Example">
-				<h1>Hello Next.js 👋</h1>
-				<p>
-					<Link href="/about">
-						<a>About</a>
-					</Link>
-				</p>
-			</SampleLayout>
-		</div>
+		<>
+			<PageHead title="TOP" />
+			<h1>Hello Next.js 👋</h1>
+			<p>
+				<Link href="/about">
+					<a>About</a>
+				</Link>
+			</p>
+		</>
 	)
 }
-
 export default IndexPage

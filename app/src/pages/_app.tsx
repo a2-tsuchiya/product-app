@@ -9,11 +9,14 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
 
+import AppContextProvider from 'src/store/AppProvider'
+import HeaderLayout from 'src/layouts/HeaderLayout'
+
 import axios from 'axios'
 axios.defaults.baseURL = process.env.ENDPOINT
 
 /**
- * Global App Config
+ * Rendered on the Server-side and Client-side
  * @see https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
  */
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
@@ -37,9 +40,13 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 			<ThemeProvider theme={theme}>
 				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
 				<CssBaseLine />
-				<Provider session={pageProps.session}>
-					<Component {...pageProps} />
-				</Provider>
+				<AppContextProvider>
+					<HeaderLayout title="Product Lineup">
+						<Provider session={pageProps.session}>
+							<Component {...pageProps} />
+						</Provider>
+					</HeaderLayout>
+				</AppContextProvider>
 			</ThemeProvider>
 		</React.Fragment>
 	)

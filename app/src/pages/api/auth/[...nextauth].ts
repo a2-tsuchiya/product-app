@@ -3,7 +3,6 @@ import Providers from 'next-auth/providers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const findUserByCredentials = (credentials: Record<string, string>) => {
-	console.log(process.env)
 	if (
 		credentials.username === process.env.USER_ID &&
 		credentials.password === process.env.USER_SECRET
@@ -35,5 +34,9 @@ const options = {
 		}),
 	],
 }
+/**
+ * Simple ID/PW Auth
+ * @see https://zenn.dev/okumura_daiki/articles/c9e0065716d862
+ */
 export default (req: NextApiRequest, res: NextApiResponse) =>
 	NextAuth(req, res, options)
