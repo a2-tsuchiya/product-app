@@ -40,7 +40,8 @@ export default StaticPropsDetail
  */
 export const getStaticPaths: GetStaticPaths = async () => {
 	// Get the paths we want to pre-render based on users
-	const res = await axios.get<Category[]>(`${process.env.ENDPOINT}/category`)
+	// const res = await axios.get<Category[]>(`${process.env.ENDPOINT}/category`)
+	const res = await axios.get<Category[]>('/category')
 	const data = res.data
 	const paths = data.map((d) => {
 		return {
@@ -62,11 +63,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	try {
 		const id = params?.id
-		const res = await axios.get<Category>(
-			`${process.env.ENDPOINT}/category/${id}`
-		)
+		// const res = await axios.get<Category>(
+		// 	`${process.env.ENDPOINT}/category/${id}`
+		// )
+		const res = await axios.get<Category>(`/category/${id}`)
 		const category = res.data
-		console.log(category)
 		// By returning { props: item }, the StaticPropsDetail component
 		// will receive `item` as a prop at build time
 		return { props: { category } }
