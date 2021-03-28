@@ -9,7 +9,7 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseLine from '@material-ui/core/CssBaseline'
 import theme from 'src/styles/theme'
 
-import AppContextProvider from 'src/store/AppProvider'
+import AppContextProvider from 'src/foundations/AppProvider'
 import HeaderLayout from 'src/layouts/HeaderLayout'
 
 import axios from 'axios'

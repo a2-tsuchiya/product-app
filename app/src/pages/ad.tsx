@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import PageHead from 'src/layouts/PageHead'
 
-const AboutPage = () => {
+const AdPage = () => {
 	return (
 		<>
-			<PageHead title="About | Product Lineup" />
-			<h1>About Page</h1>
-			<p>This is the about page</p>
+			<PageHead title="Ads | Product Lineup" />
+			<h1>Ad-agency Page</h1>
+			<p>This is the Advertising agency page</p>
 			<p>
 				<Link href="/">
 					<a>Go home</a>
@@ -15,4 +15,4 @@ const AboutPage = () => {
 		</>
 	)
 }
-export default AboutPage
+export default AdPage
