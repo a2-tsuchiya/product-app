@@ -1,6 +1,4 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
-
-import SampleLayout from 'src/layouts/SampleLayout'
 import ListDetail from 'src/components/ListDetail'
 import axios from 'axios'
 import { Category } from '@prisma/client'
@@ -13,22 +11,12 @@ type Props = {
 const StaticPropsDetail = ({ category, errors }: Props) => {
 	if (errors) {
 		return (
-			<SampleLayout title="Error | Next.js + TypeScript Example">
-				<p>
-					<span style={{ color: 'red' }}>Error:</span> {errors}
-				</p>
-			</SampleLayout>
+			<p>
+				<span style={{ color: 'red' }}>Error:</span> {errors}
+			</p>
 		)
 	}
-
-	return (
-		<SampleLayout
-			title={`${
-				category ? category.name : 'User Detail'
-			} | Next.js + TypeScript Example`}>
-			{category && <ListDetail category={category} />}
-		</SampleLayout>
-	)
+	return <>{category && <ListDetail category={category} />}</>
 }
 
 export default StaticPropsDetail
