@@ -121,6 +121,7 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 								<LinkTab
 									label={category.name}
 									href={category.href}
+									key={category.name}
 								/>
 							))}
 						</Tabs>

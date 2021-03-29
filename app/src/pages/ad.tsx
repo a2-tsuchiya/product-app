@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next'
+import useSWR from 'swr'
 import Link from 'next/link'
 import PageHead from 'src/layouts/PageHead'
 
@@ -14,6 +15,14 @@ interface IAdPage {
 }
 const AdPage: React.FC<IAdPage> = (props) => {
 	const { productCategories } = props
+	const { data, error } = useSWR('/product/category', fetcher, {
+		initialData: props.productCategories,
+		revalidateOnFocus: false,
+	})
+
+	if (error) return <div>failed to load</div>
+	if (!data) return <div>loading...</div>
+
 	return (
 		<>
 			<PageHead title="Ads | Product Lineup" />
@@ -36,8 +45,14 @@ const AdPage: React.FC<IAdPage> = (props) => {
 }
 export default AdPage
 
+const fetcher = async (url: string): Promise<IProductCategory[]> => {
+	const res = await axios.post<IProductCategory[]>(url)
+	return Promise.resolve(res.data)
+}
+
 export const getStaticProps: GetStaticProps = async () => {
-	const res = await axios.post<IProductCategory[]>('/product/category')
-	const productCategories = res.data
+	// const res = await axios.post<IProductCategory[]>('/product/category')
+	// const productCategories = res.data
+	const productCategories = await fetcher('/product/category')
 	return { props: { productCategories }, revalidate: 180 }
 }
