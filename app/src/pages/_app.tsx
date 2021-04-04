@@ -12,9 +12,6 @@ import theme from 'src/styles/theme'
 import AppContextProvider from 'src/foundations/AppProvider'
 import HeaderLayout from 'src/layouts/HeaderLayout'
 
-import axios from 'axios'
-axios.defaults.baseURL = process.env.ENDPOINT
-
 /**
  * Rendered on the Server-side and Client-side
  * @see https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf

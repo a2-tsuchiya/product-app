@@ -12,71 +12,106 @@ datasource db {
 }
 
 model Domain {
-  id          String    @id @map("domain_id") @db.VarChar(30)
-  name        String    @map("domain_name")
-  path        String?   @map("directory_path") @db.Text
+  id             String       @id @map("domain_id") @db.VarChar(10)
+  name           String       @map("domain_name")
 
-  createdAt   DateTime  @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser String    @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt   DateTime  @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser String    @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag Boolean   @default(false) @map("invalid_flag")
-  note        String?   @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
 
-  category    Category[]
+  segment        Segment[]
 
   @@map("tbl_domain")
 }
 
 model Category {
-  id          String    @id @map("category_id") @db.VarChar(30)
-  name        String    @map("category_name")
-  path        String?   @map("directory_path") @db.Text
+  id             String       @id @map("category_id") @db.VarChar(10)
+  name           String       @map("category_name")
 
-  createdAt   DateTime  @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser String    @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt   DateTime  @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser String    @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag Boolean   @default(false) @map("invalid_flag")
-  note        String?   @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
 
-  domain      Domain    @relation(fields: [domainId], references: [id])
-  domainId    String    @map("domain_id") @db.VarChar(30)
-  product     Product[]
+  segment        Segment[]
 
   @@map("tbl_category")
 }
 
+model SubCategory {
+  id             String       @id @map("sub_category_id") @db.VarChar(10)
+  name           String       @map("category_name")
+
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
+
+  segment        Segment[]
+
+  @@map("tbl_subcategory")  
+}
+
+// [Rule] Domain/Category/SubCategory
+model Segment {
+  id             String       @id @map("segment_id") @db.VarChar(10)
+  name           String       @map("segment_name")
+  domainId       String       @map("domain_id") @db.VarChar(10)
+  categoryId     String       @map("category_id") @db.VarChar(10)
+  subCategoryId  String       @map("sub_category_id") @db.VarChar(10)
+
+  domain         Domain       @relation(fields: [domainId], references: [id])
+  category       Category     @relation(fields: [categoryId], references: [id])
+  subCategory    SubCategory  @relation(fields: [subCategoryId], references: [id])
+
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
+
+  product        Product[]
+
+  @@map("tbl_segment")
+}
+
 model Department {
-  id          String    @id @map("department_id") @db.VarChar(30)
-  parentId    String?   @map("department_parent_id") @db.VarChar(30)
-  name        String    @map("department_name")
+  id             String       @id @map("department_id") @db.VarChar(10)
+  parentId       String?      @map("department_parent_id") @db.VarChar(10)
+  name           String       @map("department_name")
 
-  createdAt   DateTime  @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser String    @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt   DateTime  @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser String    @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag Boolean   @default(false) @map("invalid_flag")
-  note        String?   @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
 
-  product     Product[]
-  salesItem   SalesItem[]
+  product        Product[]
 
   @@map("tbl_department")
 }
 
 model Supplier {
-  id          String     @id @map("supplier_id") @db.VarChar(30)
-  division    String     @map("supplier_division") @db.VarChar(30)
-  name        String     @map("supplier_name")
-  nameKana    String?    @map("supplier_name_kana")
+  id             String       @id @map("supplier_id") @db.VarChar(10)
+  division       String       @map("supplier_division") @db.VarChar(10)
+  name           String       @map("supplier_name")
+  nameKana       String?      @map("supplier_name_kana")
 
-  createdAt   DateTime   @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser String     @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt   DateTime   @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser String     @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag Boolean    @default(false) @map("invalid_flag")
-  note        String?    @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
 
   product     Product[]
   salesItem   SalesItem[]
@@ -84,59 +119,56 @@ model Supplier {
   @@map("tbl_supplier")
 }
 
-// 主要媒体フラグが必要？
 model Product {
-  id           String     @id @map("product_id") @db.VarChar(30)
-  name         String     @map("product_name")
-  nameKana     String?    @map("product_name_kana")
-  profitRate   Decimal?   @map("profit_rate") @db.Decimal(5, 2)
+  id             String       @id @map("product_id") @db.VarChar(10)
+  name           String       @map("product_name")
+  nameKana       String?      @map("product_name_kana")
+  segmentId      String       @map("segment_id") @db.VarChar(10)
+  supplierId     String       @map("supplier_id") @db.VarChar(10)
+  profitRate     Decimal?     @map("profit_rate") @db.Decimal(5, 2)
+  departmentId   String       @map("supplier_org_id") @db.VarChar(10)
+  primaryFlag    Boolean      @default(false) @map("primary_flag")
 
-  createdAt    DateTime   @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser  String     @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt    DateTime   @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser  String     @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag  Boolean    @default(false) @map("invalid_flag")
-  note         String?    @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
+  
+  segment        Segment      @relation(fields: [segmentId], references: [id])
+  supplier       Supplier     @relation(fields: [supplierId], references: [id])
+  department     Department   @relation(fields: [departmentId], references: [id])
 
-  category     Category   @relation(fields: [categoryId], references: [id])
-  categoryId   String     @map("category_id") @db.VarChar(30)
-  supplier     Supplier   @relation(fields: [supplierId], references: [id])
-  supplierId   String     @map("supplier_id") @db.VarChar(30)
-  department   Department @relation(fields: [departmentId], references: [id])
-  departmentId String     @map("supplier_org_id") @db.VarChar(30)
-
-  subBrand    SubBrand[]
+  bujinessItem  BujinessItem[]
 
   @@map("tbl_product")
 }
 
 model SubBrand {
-  id           String     @id @map("subbrand_id") @db.VarChar(30)
-  name         String     @map("subbrand_name")
+  id             String       @id @map("subbrand_id") @db.VarChar(10)
+  name           String       @map("subbrand_name")
 
-  createdAt    DateTime   @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser  String     @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt    DateTime   @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser  String     @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag  Boolean    @default(false) @map("invalid_flag")
-  note         String?    @db.Text  
-
-  product      Product    @relation(fields: [productId], references:[id])
-  productId    String     @map("product_id") @db.VarChar(30)
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text  
 
   @@map(name:"tbl_subbrand")
 }
 
 model ClientRule {
-  id           String       @id @map("client_rule_id") @db.VarChar(30)
-  name         String       @map("client_rule")
+  id             String       @id @map("client_rule_id") @db.VarChar(10)
+  name           String       @map("client_rule")
 
-  createdAt    DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser  String       @default("root") @map("created_user") @db.VarChar(30)
-  updatedAt    DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser  String       @default("root") @map("updated_user") @db.VarChar(30)
-  invalidFlag  Boolean      @default(false) @map("invalid_flag")
-  note         String       @db.Text
+  createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
+  updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
+  invalidFlag    Boolean      @default(false) @map("invalid_flag")
+  note           String?      @db.Text
 
   bujinessItem BujinessItem[]
 
@@ -144,13 +176,13 @@ model ClientRule {
 }
 
 model CancelRule {
-  id           String       @id @map("cancel_rule_id") @db.VarChar(30)
+  id           String       @id @map("cancel_rule_id") @db.VarChar(10)
   name         String       @map("cancel_rule")
 
   createdAt    DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser  String       @default("root") @map("created_user") @db.VarChar(30)
+  createdUser  String       @default("root") @map("created_user") @db.VarChar(10)
   updatedAt    DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser  String       @default("root") @map("updated_user") @db.VarChar(30)
+  updatedUser  String       @default("root") @map("updated_user") @db.VarChar(10)
   invalidFlag  Boolean      @default(false) @map("invalid_flag")
   note         String?      @db.Text
 
@@ -159,50 +191,54 @@ model CancelRule {
   @@map("tbl_cancel_rule")
 }
 
+// [Rule] Product/SubBrand/ClientRule
 model BujinessItem {
-  id           String       @id @map("bujiness_item_id") @db.VarChar(30)
+  id           String       @id @map("bujiness_item_id") @db.VarChar(10)
   name         String       @map("bujiness_item_name")
   nameKana     String?      @map("bujiness_item_name_kana")
+  productId    String       @map("product_id") @db.VarChar(10)
+  subBrandId   String       @map("subbrand_id") @db.VarChar(10)
+  clientRuleId String       @map("client_rule_id") @db.VarChar(10)
+  cancelRuleId String       @map("cancel_rule_id") @db.VarChar(10)
+  profitRate   Decimal?      @map("profit_rate") @db.Decimal(5, 2)
 
-  profitRate   Decimal      @map("profit_rate") @db.Decimal(5, 2)
   createdAt    DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser  String       @default("root") @map("created_user") @db.VarChar(30)
+  createdUser  String       @default("root") @map("created_user") @db.VarChar(10)
   updatedAt    DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser  String       @default("root") @map("updated_user") @db.VarChar(30)
+  updatedUser  String       @default("root") @map("updated_user") @db.VarChar(10)
   invalidFlag  Boolean      @default(false) @map("invalid_flag")
   note         String?      @db.Text
 
-  cancelRule   CancelRule   @relation(fields: [cancelRuleId], references: [id])
-  cancelRuleId String       @map("cancel_rule_id") @db.VarChar(30)
+  product      Product      @relation(fields: [productId], references: [id])
   clientRule   ClientRule   @relation(fields: [clientRuleId], references: [id])
-  clientRuleId String       @map("client_rule_id") @db.VarChar(30)
+  cancelRule   CancelRule   @relation(fields: [cancelRuleId], references: [id])
   salesItem    SalesItem[]
 
   @@map("tbl_bujiness_item")
 }
 
 model SalesItem {
-  id             String       @id @map("sales_item_id") @db.VarChar(30)
+  id             String       @id @map("sales_item_id") @db.VarChar(10)
   name           String       @map("sales_item_name")
   menu           String       @map("menu_name")
-  costType       String       @map("cost_type") @db.VarChar(30)
-  bujinessType   String       @map("bujiness_type") @db.VarChar(30)
-  adType         String       @map("ad_type") @db.VarChar(30)
+  bujinessItemId String       @map("bujiness_item_id") @db.VarChar(10)
+  key            String?      @map("menu_key") @db.VarChar(10)
+  costType       String?      @map("cost_type") @db.VarChar(10)
+  operationType  String?      @map("operation_type") @db.VarChar(10)
+  bujinessType   String?      @map("bujiness_type") @db.VarChar(10)
+  adType         String?      @map("ad_type") @db.VarChar(10)
   profitRate     Decimal?     @map("profit_rate") @db.Decimal(5, 2)
+  supplierId     String       @map("supplier_id") @db.VarChar(10)
 
   createdAt      DateTime     @default(now()) @map("created_date") @db.Timestamp(3)
-  createdUser    String       @default("root") @map("created_user") @db.VarChar(30)
+  createdUser    String       @default("root") @map("created_user") @db.VarChar(10)
   updatedAt      DateTime     @updatedAt @map("updated_date") @db.Timestamp(3)
-  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(30)
+  updatedUser    String       @default("root") @map("updated_user") @db.VarChar(10)
   invalidFlag    Boolean      @default(false) @map("invalid_flag")
   note           String?      @db.Text
   
-  bujinessItem   BujinessItem @relation(fields: [bujinessItemid], references: [id])
-  bujinessItemid String       @map("bujiness_item_id") @db.VarChar(30)
+  bujinessItem   BujinessItem @relation(fields: [bujinessItemId], references: [id])
   supplier       Supplier     @relation(fields: [supplierId], references: [id])
-  supplierId     String       @map("supplier_id") @db.VarChar(30)
-  department     Department   @relation(fields: [departmentId], references: [id])
-  departmentId   String       @map("supplier_org_id") @db.VarChar(30)
 
   @@map("tbl_sales_item")
 }
