@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'src/foundations/axios'
 axios.defaults.baseURL = process.env.ENDPOINT
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Category } from '@prisma/client'
