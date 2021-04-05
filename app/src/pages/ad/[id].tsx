@@ -1,11 +1,11 @@
-import { GetStaticProps, GetStaticPaths } from 'next'
-import axios from 'axios'
+// import { GetStaticProps, GetStaticPaths } from 'next'
+// import axios from 'axios'
 
-interface IProductCategory {
-	id: string
-	name: string
-	flg: boolean
-}
+// interface IProductCategory {
+// 	id: string
+// 	name: string
+// 	flg: boolean
+// }
 
 const AdDetail = () => {
 	return <h1>Hello, Ads</h1>
