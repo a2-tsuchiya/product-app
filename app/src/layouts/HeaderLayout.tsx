@@ -58,7 +58,7 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 	const handleClickSignIn = () => signIn()
 	const handleClickSignOut = () => signOut()
 	const handleChange = (_: React.ChangeEvent<{}>, newValue: number) =>
-		dispatch({ type: 'tabValue', payload: newValue })
+		dispatch({ tabValue: { payload: newValue } })
 
 	if (loading) return <div>Loading...</div>
 

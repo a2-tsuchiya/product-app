@@ -2,39 +2,49 @@ import { GetStaticProps } from 'next'
 import useSWR from 'swr'
 import Link from 'next/link'
 import PageHead from 'src/layouts/PageHead'
-import { Segment, Product } from '@prisma/client'
-
+import { Segment, Product, BujinessItem } from '@prisma/client'
 import axios from 'src/foundations/axios'
+
+import ChipsSegment from 'src/components/ChipsSegment'
+import ChipsProduct from 'src/components/ChipsProduct'
 
 interface IAdPage {
 	segments: Segment[]
 	products: Product[]
+	bujinessItems: BujinessItem[]
 }
 const AdPage: React.FC<IAdPage> = (props) => {
-	const { segments, products } = props
-	const { data, error } = useSWR('/segment', getSegment, {
-		initialData: segments,
-		revalidateOnFocus: false,
-	})
+	const { bujinessItems } = props
 
-	if (error) return <div>failed to load</div>
-	if (!data) return <div>loading...</div>
+	const { data: segments, error: segmentError } = useSWR(
+		'/segment',
+		getSegments,
+		{
+			initialData: props.segments,
+			revalidateOnFocus: false,
+		}
+	)
+	const { data: products, error: productError } = useSWR(
+		'/product',
+		getProducts,
+		{
+			initialData: props.products,
+			revalidateOnFocus: false,
+		}
+	)
 
-	const segmentList = data.map((item) => {
+	if (segmentError) return <div>failed to load</div>
+	if (productError) return <div>failed to load</div>
+	if (!segments) return <div>loading...</div>
+	if (!products) return <div>loading...</div>
+
+	const majorProducts = products.filter((item) => item.primaryFlag)
+	const bujinessItemList = bujinessItems.map((item) => {
 		return (
 			<li key={item.id} value={item.id}>
 				{item.name}
 			</li>
 		)
-	})
-	const majorList = products.map((item) => {
-		if (item.primaryFlag) {
-			return (
-				<li key={item.id} value={item.id}>
-					{item.name}
-				</li>
-			)
-		}
 	})
 
 	return (
@@ -43,10 +53,11 @@ const AdPage: React.FC<IAdPage> = (props) => {
 			<h1>Ad-agency Page</h1>
 			<p>This is the Advertising agency page</p>
 			<p>Segments</p>
-			<ul>{segmentList}</ul>
-			<hr />
+			<ChipsSegment segments={segments} />
 			<p>Major Products</p>
-			<ul>{majorList}</ul>
+			<ChipsProduct products={majorProducts} />
+			<p>Bujiness Imtes</p>
+			<ul>{bujinessItemList}</ul>
 			<p>
 				<Link href="/">
 					<a>Go home</a>
@@ -57,7 +68,8 @@ const AdPage: React.FC<IAdPage> = (props) => {
 }
 export default AdPage
 
-const getSegment = async (url: string): Promise<Segment[]> => {
+// SSR & SWR
+const getSegments = async (url: string): Promise<Segment[]> => {
 	const res = await axios.get<Segment[]>(url)
 	return Promise.resolve(res.data)
 }
@@ -65,16 +77,23 @@ const getProducts = async (url: string): Promise<Product[]> => {
 	const res = await axios.post<Product[]>(url, {})
 	return Promise.resolve(res.data)
 }
+const getBujinessItems = async (url: string): Promise<BujinessItem[]> => {
+	const res = await axios.post<BujinessItem[]>(url, {})
+	return Promise.resolve(res.data)
+}
 
+// SSR
 export const getStaticProps: GetStaticProps = async () => {
-	const segments = await getSegment('/segment')
+	const segments = await getSegments('/segment')
 	const products = await getProducts('/products')
+	const bujinessItems = await getBujinessItems('/bujinessitems')
 
 	// return { props: { segment }, revalidate: 180 }
 	return {
 		props: {
 			segments,
 			products,
+			bujinessItems,
 		},
 		revalidate: 180,
 	}
