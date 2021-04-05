@@ -1,6 +1,6 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 import ListDetail from 'src/components/ListDetail'
-import axios from 'axios'
+import axios from 'src/foundations/axios'
 import { Category } from '@prisma/client'
 
 type Props = {

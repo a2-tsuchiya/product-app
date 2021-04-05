@@ -3,7 +3,7 @@ import Link from 'next/link'
 import PageHead from 'src/layouts/PageHead'
 import List from 'src/components/List'
 
-import axios from 'axios'
+import axios from 'src/foundations/axios'
 import { Category } from '@prisma/client'
 
 type Props = {
