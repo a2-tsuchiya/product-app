@@ -20,10 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }))
 
-export interface ExtendProduct extends Product {
-	color: 'default' | 'primary' | 'secondary'
-}
-export interface ChipsProps {
+interface ChipsProps {
 	products: Product[]
 }
 
@@ -32,40 +29,62 @@ const ChipsSegment: React.FC<ChipsProps> = ({ products }) => {
 	const { state, dispatch } = useAppContext()
 
 	const handleClick = (chipData: Product) => {
-		const newChips = state.products.map((chip) => {
-			if (chip.id == chipData.id) {
-				if (chip.color === 'default') chip.color = 'primary'
-				else chip.color = 'default'
-			}
-			return chip
-		})
-		dispatch({ products: { payload: newChips } })
+		// If IDs in State, Delete it, if not, Add it
+		const { productIds } = state
+		if (productIds.find((id) => id === chipData.id)) {
+			dispatch({
+				productIds: {
+					payload: productIds.filter((id) => id !== chipData.id),
+				},
+			})
+		} else {
+			productIds.push(chipData.id)
+			dispatch({ productIds: { payload: productIds } })
+		}
 	}
-
-	React.useEffect(() => {
-		const chips: ExtendProduct[] = products.map((item) => {
-			return {
-				...item,
-				color: 'default',
-			}
-		})
-		dispatch({ products: { payload: chips } })
-	}, [products])
+	const handleClickAll = () => {
+		const all = products.map((item) => item.id)
+		if (state.productIds.length === products.length) {
+			dispatch({ productIds: { payload: [] } })
+		} else {
+			dispatch({ productIds: { payload: all } })
+		}
+	}
 
 	return (
 		<Paper component="ul" className={classes.root}>
-			{state.products.map((item) => {
-				return (
-					<li key={item.id}>
-						<Chip
-							label={item.name}
-							color={item.color}
-							onClick={() => handleClick(item)}
-							className={classes.chip}
-						/>
-					</li>
+			{products.map((item) => {
+				// Selected Produccts
+				let selected: 'primary' | 'default' = 'default'
+				if (state.productIds.find((id) => id === item.id)) {
+					selected = 'primary'
+				}
+				// Selected Segments
+				const segments = state.segmentIds.find(
+					(id) => id === item.segmentId
 				)
+				// if (item.primaryFlag && segments) {
+				if (segments) {
+					return (
+						<li key={item.id}>
+							<Chip
+								label={item.name}
+								color={selected}
+								onClick={() => handleClick(item)}
+								className={classes.chip}
+							/>
+						</li>
+					)
+				}
 			})}
+			<li key="all">
+				<Chip
+					label="ALL/CLEAR"
+					color="secondary"
+					className={classes.chip}
+					onClick={handleClickAll}
+				/>
+			</li>
 		</Paper>
 	)
 }

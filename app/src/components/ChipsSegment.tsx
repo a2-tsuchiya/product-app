@@ -1,4 +1,5 @@
 import * as React from 'react'
+import _ from 'lodash'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 
@@ -20,10 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }))
 
-export interface ExtendSegment extends Segment {
-	color: 'default' | 'primary' | 'secondary'
-}
-export interface ChipsProps {
+interface ChipsProps {
 	segments: Segment[]
 }
 
@@ -32,40 +30,54 @@ const ChipsSegment: React.FC<ChipsProps> = ({ segments }) => {
 	const { state, dispatch } = useAppContext()
 
 	const handleClick = (chipData: Segment) => {
-		const newChips = state.segments.map((chip) => {
-			if (chip.id == chipData.id) {
-				if (chip.color === 'default') chip.color = 'primary'
-				else chip.color = 'default'
-			}
-			return chip
-		})
-		dispatch({ segments: { payload: newChips } })
+		// If IDs in State, Delete it, if not, Add it
+		const { segmentIds } = state
+		if (segmentIds.find((id) => id === chipData.id)) {
+			dispatch({
+				segmentIds: {
+					payload: segmentIds.filter((id) => id !== chipData.id),
+				},
+			})
+		} else {
+			segmentIds.push(chipData.id)
+			dispatch({ segmentIds: { payload: segmentIds } })
+		}
 	}
-
-	React.useEffect(() => {
-		const chips: ExtendSegment[] = segments.map((item) => {
-			return {
-				...item,
-				color: 'default',
-			}
-		})
-		dispatch({ segments: { payload: chips } })
-	}, [segments])
+	const handleClickAll = () => {
+		const all = segments.map((item) => item.id)
+		if (state.segmentIds.length == segments.length) {
+			dispatch({ segmentIds: { payload: [] } })
+		} else {
+			dispatch({ segmentIds: { payload: all } })
+		}
+	}
 
 	return (
 		<Paper component="ul" className={classes.root}>
-			{state.segments.map((item) => {
+			{segments.map((item) => {
+				// Selected Segments
+				let selected: 'primary' | 'default' = 'default'
+				if (state.segmentIds.find((id) => id === item.id))
+					selected = 'primary'
 				return (
 					<li key={item.id}>
 						<Chip
 							label={item.name}
-							color={item.color}
+							color={selected}
 							onClick={() => handleClick(item)}
 							className={classes.chip}
 						/>
 					</li>
 				)
 			})}
+			<li key="all">
+				<Chip
+					label="ALL/CLEAR"
+					color="secondary"
+					className={classes.chip}
+					onClick={handleClickAll}
+				/>
+			</li>
 		</Paper>
 	)
 }

@@ -1,31 +1,31 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { ExtendSegment } from 'src/components/ChipsSegment'
-import { ExtendProduct } from 'src/components/ChipsProduct'
 
 export interface State {
 	tabValue: number
-	segments: ExtendSegment[]
-	products: ExtendProduct[]
+	segmentIds: string[]
+	productIds: string[]
 }
 export interface Action {
 	tabValue?: { payload: number }
-	segments?: { payload: ExtendSegment[] }
-	products?: { payload: ExtendProduct[] }
+	segmentIds?: { payload: string[] }
+	productIds?: { payload: string[] }
 }
 const initState: State = {
 	tabValue: 0,
-	segments: [] as ExtendSegment[],
-	products: [] as ExtendProduct[],
+	segmentIds: [],
+	productIds: [],
 }
 export const reducer = (state: State, action: Action) => {
 	const newState = _.cloneDeep(state)
 
 	if (action.tabValue) newState.tabValue = action.tabValue.payload
-	if (action.segments) newState.segments = action.segments.payload
-	if (action.products) newState.products = action.products.payload
+	if (action.segmentIds) newState.segmentIds = action.segmentIds.payload
+	if (action.productIds) newState.productIds = action.productIds.payload
+
 	return newState
 }
+
 export interface AppContextType {
 	state: State
 	dispatch: React.Dispatch<Action>
