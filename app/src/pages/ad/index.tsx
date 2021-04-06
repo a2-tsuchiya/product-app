@@ -13,7 +13,7 @@ import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import Typography from '@material-ui/core/Typography'
 import ChipsSegment from 'src/components/ChipsSegment'
 import ChipsProduct from 'src/components/ChipsProduct'
-import CardItem from 'src/components/CardItem'
+import CardItem from 'src/components/Carditem'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
 
