@@ -8,3 +8,7 @@ export type User = {
 	id: number
 	name: string
 }
+
+export type Relation = {
+	[key: string]: { id: string; name: string }
+}

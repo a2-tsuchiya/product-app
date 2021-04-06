@@ -5,7 +5,7 @@ import Chip from '@material-ui/core/Chip'
 
 import { useAppContext } from 'src/foundations/AppProvider'
 import { makeStyles, Theme } from '@material-ui/core/styles'
-import { Segment } from '@prisma/client'
+import { Segment, Product } from '@prisma/client'
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -23,30 +23,49 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ChipsProps {
 	segments: Segment[]
+	products: Product[]
 }
 
-const ChipsSegment: React.FC<ChipsProps> = ({ segments }) => {
+const ChipsSegment: React.FC<ChipsProps> = ({ segments, products }) => {
 	const classes = useStyles()
 	const { state, dispatch } = useAppContext()
 
+	/**
+	 * If Segment ID in State, delete it, if not, add it.
+	 * When delete Segment ID, delete Product IDs related to current Segment ID as well.
+	 * @param chipData Clicked Segment
+	 */
 	const handleClick = (chipData: Segment) => {
-		// If IDs in State, Delete it, if not, Add it
 		const { segmentIds } = state
 		if (segmentIds.find((id) => id === chipData.id)) {
+			// Delete Segment ID
 			dispatch({
 				segmentIds: {
 					payload: segmentIds.filter((id) => id !== chipData.id),
 				},
 			})
+			// Delete Product IDs related to current Segment ID
+			const sorted = products.filter(
+				(item) => item.segmentId === chipData.id
+			)
+			const ids = state.productIds.filter((id) => {
+				if (!sorted.find((item) => item.id === id)) return id
+			})
+			dispatch({ productIds: { payload: ids } })
 		} else {
+			// Add Segment ID
 			segmentIds.push(chipData.id)
 			dispatch({ segmentIds: { payload: segmentIds } })
 		}
 	}
+	/**
+	 * Delete All Segment IDs, Product Ids.
+	 */
 	const handleClickAll = () => {
 		const all = segments.map((item) => item.id)
 		if (state.segmentIds.length == segments.length) {
 			dispatch({ segmentIds: { payload: [] } })
+			dispatch({ productIds: { payload: [] } })
 		} else {
 			dispatch({ segmentIds: { payload: all } })
 		}

@@ -135,7 +135,7 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 					{children}
 					<ScrollTop {...props}>
 						<Fab
-							color="primary"
+							color="secondary"
 							size="large"
 							aria-label="scroll back to top">
 							<KeyboardArrowUpIcon />

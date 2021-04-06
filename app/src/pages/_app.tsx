@@ -33,6 +33,11 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 					name="viewport"
 					content="minimum-scale=1, initial-scale=1, width=device-width"
 				/>
+				<link
+					rel="stylesheet"
+					type="text/css"
+					href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"
+				/>
 			</Head>
 			<ThemeProvider theme={theme}>
 				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}

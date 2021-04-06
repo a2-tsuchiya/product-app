@@ -1,22 +1,42 @@
 import * as React from 'react'
 import axios from 'src/foundations/axios'
 import useSWR from 'swr'
-import Link from 'next/link'
 import PageHead from 'src/layouts/PageHead'
+import TopFab from 'src/components/TopFab'
 import { Segment, Product, BujinessItem } from '@prisma/client'
+import { Relation } from 'src/interfaces'
 import { GetStaticProps } from 'next'
 import { useAppContext } from 'src/foundations/AppProvider'
+import { makeStyles, Theme } from '@material-ui/core/styles'
 
+import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
+import Typography from '@material-ui/core/Typography'
 import ChipsSegment from 'src/components/ChipsSegment'
 import ChipsProduct from 'src/components/ChipsProduct'
-import CardItem from 'src/components/Carditem'
+import CardItem from 'src/components/CardItem'
+import Grid from '@material-ui/core/Grid'
+import Divider from '@material-ui/core/Divider'
+
+const useStyles = makeStyles((theme: Theme) => ({
+	container: {
+		flexGrow: 1,
+		marginBottom: theme.spacing(2),
+	},
+	icon: {
+		marginRight: theme.spacing(1),
+		verticalAlign: 'middle',
+		display: 'inline-flex',
+	},
+}))
 
 interface IAdPage {
 	segments: Segment[]
 	products: Product[]
-	bujinessItems: BujinessItem[]
+	bujinessItems: (BujinessItem & Relation)[]
 }
+
 const AdPage: React.FC<IAdPage> = (props) => {
+	const classes = useStyles()
 	const { bujinessItems } = props
 	const { state } = useAppContext()
 
@@ -42,32 +62,53 @@ const AdPage: React.FC<IAdPage> = (props) => {
 	if (!segments) return <div>loading...</div>
 	if (!products) return <div>loading...</div>
 
-	const bujinessItemList = bujinessItems.map((item) => {
-		if (state.productIds.find((id) => id === item.productId)) {
-			return (
-				<li key={item.id} value={item.id}>
-					<CardItem title={item.name} />
-				</li>
-			)
-		}
-	})
-
 	return (
 		<>
 			<PageHead title="Ads | Product Lineup" />
-			<h1>Ad-agency Page</h1>
-			<p>This is the Advertising agency page</p>
-			<p>Segments</p>
-			<ChipsSegment segments={segments} />
-			<p>Major Products</p>
-			<ChipsProduct products={products} />
-			<p>Bujiness Items</p>
-			<ul style={{ listStyle: 'none' }}>{bujinessItemList}</ul>
-			<p>
-				<Link href="/">
-					<a>Go home</a>
-				</Link>
+			<p style={{ color: 'red' }}>パンくず欲しいかも。。</p>
+			<Typography variant="h5" component="h2" gutterBottom>
+				広告代理サービス
+			</Typography>
+			<p style={{ color: 'red' }}>
+				ページ遷移したときに選択肢をリセットする
 			</p>
+			<Typography
+				variant="h6"
+				component="h3"
+				color="textPrimary"
+				gutterBottom>
+				<LocalOfferOutlinedIcon className={classes.icon} />
+				セグメント
+			</Typography>
+			<ChipsSegment segments={segments} products={products} />
+			<Typography
+				variant="h6"
+				component="h3"
+				color="textPrimary"
+				gutterBottom>
+				<LocalOfferOutlinedIcon className={classes.icon} />
+				商品／媒体
+			</Typography>
+			<ChipsProduct products={products} />
+			<Typography
+				variant="h6"
+				component="h3"
+				color="textPrimary"
+				gutterBottom>
+				<LocalOfferOutlinedIcon className={classes.icon} />
+				営業品目
+			</Typography>
+			<Grid container className={classes.container} spacing={4}>
+				{bujinessItems.map((item) => {
+					if (state.productIds.find((id) => id === item.productId)) {
+						return <CardItem item={item} />
+					}
+				})}
+			</Grid>
+			<Grid container>
+				<Divider />
+				<TopFab />
+			</Grid>
 		</>
 	)
 }
@@ -82,8 +123,10 @@ const getProducts = async (url: string): Promise<Product[]> => {
 	const res = await axios.post<Product[]>(url, {})
 	return Promise.resolve(res.data)
 }
-const getBujinessItems = async (url: string): Promise<BujinessItem[]> => {
-	const res = await axios.post<BujinessItem[]>(url, {})
+const getBujinessItems = async (
+	url: string
+): Promise<(BujinessItem & Relation)[]> => {
+	const res = await axios.post<(BujinessItem & Relation)[]>(url, {})
 	return Promise.resolve(res.data)
 }
 

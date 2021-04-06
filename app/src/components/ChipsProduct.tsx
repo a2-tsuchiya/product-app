@@ -28,26 +28,38 @@ const ChipsSegment: React.FC<ChipsProps> = ({ products }) => {
 	const classes = useStyles()
 	const { state, dispatch } = useAppContext()
 
+	/**
+	 * If Product ID in State, delete it, if not, add it
+	 * @param chipData Clicked Product
+	 */
 	const handleClick = (chipData: Product) => {
-		// If IDs in State, Delete it, if not, Add it
 		const { productIds } = state
 		if (productIds.find((id) => id === chipData.id)) {
+			// Delete Product ID
 			dispatch({
 				productIds: {
 					payload: productIds.filter((id) => id !== chipData.id),
 				},
 			})
 		} else {
+			// Add Product ID
 			productIds.push(chipData.id)
 			dispatch({ productIds: { payload: productIds } })
 		}
 	}
+	/**
+	 * Select Product IDs related to selected Segment IDs
+	 */
 	const handleClickAll = () => {
-		const all = products.map((item) => item.id)
-		if (state.productIds.length === products.length) {
+		const sorted = products.filter((item) => {
+			if (state.segmentIds.find((id) => id === item.segmentId))
+				return item
+		})
+		const ids = sorted.map((item) => item.id)
+		if (state.productIds.length === ids.length) {
 			dispatch({ productIds: { payload: [] } })
 		} else {
-			dispatch({ productIds: { payload: all } })
+			dispatch({ productIds: { payload: ids } })
 		}
 	}
 
