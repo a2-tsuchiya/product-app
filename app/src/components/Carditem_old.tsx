@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface CardProps {
 	title: string
 }
-const CardItem: React.FC<CardProps> = ({ title }) => {
+const CardItemOld: React.FC<CardProps> = ({ title }) => {
 	const classes = useStyles()
 
 	return (
@@ -41,4 +41,4 @@ const CardItem: React.FC<CardProps> = ({ title }) => {
 		</Card>
 	)
 }
-export default CardItem
+export default CardItemOld
