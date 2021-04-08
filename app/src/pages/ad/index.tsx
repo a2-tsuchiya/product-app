@@ -2,44 +2,42 @@ import * as React from 'react'
 import axios from 'src/foundations/axios'
 import useSWR from 'swr'
 import PageHead from 'src/layouts/PageHead'
-import TopFab from 'src/components/TopFab'
+import useStyles from 'src/styles/adPage'
 import { Segment, Product, BujinessItem } from '@prisma/client'
 import { Relation } from 'src/interfaces'
 import { GetStaticProps } from 'next'
 import { useAppContext } from 'src/foundations/AppProvider'
-import { makeStyles, Theme } from '@material-ui/core/styles'
 
-import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
-import Typography from '@material-ui/core/Typography'
+import BreadCrumbs from 'src/components/BreadCrumbs'
 import ChipsSegment from 'src/components/ChipsSegment'
 import ChipsProduct from 'src/components/ChipsProduct'
 import CardItem from 'src/components/Carditem'
+import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
+import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
-import Divider from '@material-ui/core/Divider'
-
-const useStyles = makeStyles((theme: Theme) => ({
-	container: {
-		flexGrow: 1,
-		marginBottom: theme.spacing(2),
-	},
-	icon: {
-		marginRight: theme.spacing(1),
-		verticalAlign: 'middle',
-		display: 'inline-flex',
-	},
-}))
 
 interface IAdPage {
 	segments: Segment[]
 	products: Product[]
 	bujinessItems: (BujinessItem & Relation)[]
+	errors?: string
 }
 
 const AdPage: React.FC<IAdPage> = (props) => {
-	const classes = useStyles()
-	const { bujinessItems } = props
-	const { state } = useAppContext()
+	const { errors } = props
+	if (errors) {
+		return (
+			<p>
+				<span style={{ color: 'red' }}>Error:</span>
+				{errors}
+			</p>
+		)
+	}
 
+	const classes = useStyles()
+	const { state, dispatch } = useAppContext()
+
+	// State Segments
 	const { data: segments, error: segmentError } = useSWR(
 		'/segment',
 		getSegments,
@@ -48,6 +46,7 @@ const AdPage: React.FC<IAdPage> = (props) => {
 			revalidateOnFocus: false,
 		}
 	)
+	// State Products
 	const { data: products, error: productError } = useSWR(
 		'/product',
 		getProducts,
@@ -56,26 +55,44 @@ const AdPage: React.FC<IAdPage> = (props) => {
 			revalidateOnFocus: false,
 		}
 	)
+	// State BujinessItems
+	const { data: bujinessItems, error: bujinessItemError } = useSWR(
+		'/bujinessitems',
+		getBujinessItems,
+		{
+			initialData: props.bujinessItems,
+			revalidateOnFocus: false,
+		}
+	)
+
+	// Switch header menu cursor
+	React.useEffect(() => {
+		dispatch({ tabValue: { payload: 1 } })
+	}, [])
 
 	if (segmentError) return <div>failed to load</div>
 	if (productError) return <div>failed to load</div>
+	if (bujinessItemError) return <div>failed to load</div>
 	if (!segments) return <div>loading...</div>
 	if (!products) return <div>loading...</div>
+	if (!bujinessItems) return <div>loading...</div>
 
 	return (
-		<>
+		<div className={classes.root}>
 			<PageHead title="Ads | Product Lineup" />
-			<p style={{ color: 'red' }}>パンくず欲しいかも。。</p>
-			<Typography variant="h5" component="h2" gutterBottom>
-				広告代理サービス
+			<BreadCrumbs current="広告代理" />
+			<Typography
+				variant="h5"
+				component="h2"
+				className={classes.title}
+				gutterBottom>
+				広告代理
 			</Typography>
-			<p style={{ color: 'red' }}>
-				ページ遷移したときに選択肢をリセットする
-			</p>
 			<Typography
 				variant="h6"
 				component="h3"
 				color="textPrimary"
+				className={classes.subtitle}
 				gutterBottom>
 				<LocalOfferOutlinedIcon className={classes.icon} />
 				セグメント
@@ -85,6 +102,7 @@ const AdPage: React.FC<IAdPage> = (props) => {
 				variant="h6"
 				component="h3"
 				color="textPrimary"
+				className={classes.subtitle}
 				gutterBottom>
 				<LocalOfferOutlinedIcon className={classes.icon} />
 				商品／媒体
@@ -94,6 +112,7 @@ const AdPage: React.FC<IAdPage> = (props) => {
 				variant="h6"
 				component="h3"
 				color="textPrimary"
+				className={classes.subtitle}
 				gutterBottom>
 				<LocalOfferOutlinedIcon className={classes.icon} />
 				営業品目
@@ -101,20 +120,16 @@ const AdPage: React.FC<IAdPage> = (props) => {
 			<Grid container className={classes.container} spacing={4}>
 				{bujinessItems.map((item) => {
 					if (state.productIds.find((id) => id === item.productId)) {
-						return <CardItem item={item} />
+						return <CardItem key={item.id} item={item} />
 					}
 				})}
 			</Grid>
-			<Grid container>
-				<Divider />
-				<TopFab />
-			</Grid>
-		</>
+		</div>
 	)
 }
 export default AdPage
 
-// SSR & SWR
+// SSG & SWR
 const getSegments = async (url: string): Promise<Segment[]> => {
 	const res = await axios.get<Segment[]>(url)
 	return Promise.resolve(res.data)
@@ -130,19 +145,22 @@ const getBujinessItems = async (
 	return Promise.resolve(res.data)
 }
 
-// SSR
+// SSG & ISR
 export const getStaticProps: GetStaticProps = async () => {
-	const segments = await getSegments('/segment')
-	const products = await getProducts('/products')
-	const bujinessItems = await getBujinessItems('/bujinessitems')
+	try {
+		const segments = await getSegments('/segment')
+		const products = await getProducts('/products')
+		const bujinessItems = await getBujinessItems('/bujinessitems')
 
-	// return { props: { segment }, revalidate: 180 }
-	return {
-		props: {
-			segments,
-			products,
-			bujinessItems,
-		},
-		revalidate: 180,
+		return {
+			props: {
+				segments,
+				products,
+				bujinessItems,
+			},
+			revalidate: 180,
+		}
+	} catch (err) {
+		return { props: { errors: err.message } }
 	}
 }

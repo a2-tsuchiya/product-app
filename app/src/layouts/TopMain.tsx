@@ -1,10 +1,8 @@
-import * as React from 'react'
 import Link from 'next/link'
-import PageHead from 'src/layouts/PageHead'
-import { useAppContext } from 'src/foundations/AppProvider'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import BreadCrumbs from 'src/components/BreadCrumbs'
 import Typography from '@material-ui/core/Typography'
+import categoryMap from 'src/foundations/categoryMap'
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -16,33 +14,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }))
 
-const CrmPage = () => {
+const TopMain = () => {
 	const classes = useStyles()
-	const { dispatch } = useAppContext()
-
-	// Switch header menu cursor
-	React.useEffect(() => {
-		dispatch({ tabValue: { payload: 3 } })
-	}, [])
-
 	return (
 		<div className={classes.root}>
-			<PageHead title="CRM | Product Lineup" />
-			<BreadCrumbs current="CRM" />
+			<BreadCrumbs current="TOP" />
 			<Typography
 				variant="h5"
 				component="h2"
 				className={classes.title}
 				gutterBottom>
-				CRM
+				商品マスタ 👋
 			</Typography>
-			<p>Comming soon...</p>
-			<p>
-				<Link href="/">
-					<a>Go home</a>
-				</Link>
-			</p>
+			<ul>
+				{categoryMap.map((category) => (
+					<li key={category.name} value={category.name}>
+						<Link href={category.href}>
+							<a>{category.name}</a>
+						</Link>
+					</li>
+				))}
+			</ul>
 		</div>
 	)
 }
-export default CrmPage
+export default TopMain

@@ -1,34 +1,74 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
+import useStyles from 'src/styles/adDetail'
 import axios from 'src/foundations/axios'
+import useSWR from 'swr'
 import { BujinessItem, SalesItem } from '@prisma/client'
 import { Relation } from 'src/interfaces'
 
+import Grid from '@material-ui/core/Grid'
+import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
+import Typography from '@material-ui/core/Typography'
+import CardSalesItem from 'src/components/CardSalesItem'
+import BreadCrumbs from 'src/components/BreadCrumbs'
+
 interface IAdDetail {
 	bujinessItem: BujinessItem
-	salesItems: SalesItem[]
+	salesItems: (SalesItem & Relation)[]
+	errors?: string
 }
 
 const AdDetail: React.FC<IAdDetail> = (props) => {
-	const { bujinessItem, salesItems } = props
+	const classes = useStyles()
+	const { bujinessItem, errors } = props
+
+	if (errors) {
+		return (
+			<p>
+				<span style={{ color: 'red' }}>Error:</span>
+				{errors}
+			</p>
+		)
+	}
+
+	// State SaleItems
+	const { data: salesItems, error } = useSWR('/salesItems', getSalesItems, {
+		initialData: props.salesItems,
+		revalidateOnFocus: false,
+	})
+
+	if (error) return <div>failed to load</div>
+	if (!salesItems) return <div>loading...</div>
+
 	return (
-		<>
-			<h1>営業品目: {bujinessItem.name}</h1>
-			<ul>
+		<div className={classes.root}>
+			<BreadCrumbs current={bujinessItem.name} />
+			<Typography
+				variant="h5"
+				component="h2"
+				className={classes.title}
+				gutterBottom>
+				営業品目: {bujinessItem.name}
+			</Typography>
+			<Typography
+				variant="h6"
+				component="h3"
+				color="textPrimary"
+				className={classes.subtitle}
+				gutterBottom>
+				<LocalOfferOutlinedIcon className={classes.icon} />
+				売上明細（メニュー）
+			</Typography>
+			<Grid container className={classes.container} spacing={4}>
 				{salesItems.map((item) => (
-					<li key={item.id} value={item.id}>
-						{item.name}
-					</li>
+					<CardSalesItem key={item.id} item={item} />
 				))}
-			</ul>
-		</>
+			</Grid>
+		</div>
 	)
 }
 export default AdDetail
 
-/**
- * SSG(静的レンダリング)するパスの一覧を設定し、ビルド時に静的HTMLを生成する
- * `getStaticProps`より前に実行され、paramsに入れて配列で渡す
- */
+// SSG
 export const getStaticPaths: GetStaticPaths = async () => {
 	const res = await axios.post<(BujinessItem & Relation)[]>(
 		'/bujinessitems',
@@ -40,30 +80,37 @@ export const getStaticPaths: GetStaticPaths = async () => {
 			params: { id: String(d.id) },
 		}
 	})
-	// console.log('paths', paths)
 	return { paths, fallback: false }
 }
 
-/**
- * ビルド時に呼ばれるライフサイクル
- * `getStaticPaths`より後に実行され、paramsにデータが入る
- * @param param0
- * @returns
- */
+const getBujinessItem = async (
+	url: string
+): Promise<BujinessItem & Relation> => {
+	const res = await axios.get<BujinessItem & Relation>(url)
+	return Promise.resolve(res.data)
+}
+
+const getSalesItems = async (
+	url: string,
+	id: string
+): Promise<(SalesItem & Relation)[]> => {
+	const res = await axios.post<(SalesItem & Relation)[]>(url, {
+		bujinessItemId: id,
+	})
+	return Promise.resolve(res.data)
+}
+
+// SSG & ISR
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	try {
-		const id = params?.id
-		const res = await axios.get<BujinessItem & Relation>(
-			`/bujinessitem/${id}`
-		)
-		const bujinessItem = res.data
+		const id = params?.id as string
+		const bujinessItem = await getBujinessItem(`/bujinessitem/${id}`)
+		const salesItems = await getSalesItems('/salesitems', id)
 
-		const res2 = await axios.post<SalesItem[]>('/salesitems', {
-			bujinessItemId: id,
-		})
-		const salesItems = res2.data
-
-		return { props: { bujinessItem, salesItems } }
+		return {
+			props: { bujinessItem, salesItems },
+			revalidate: 180,
+		}
 	} catch (err) {
 		return { props: { errors: err.message } }
 	}

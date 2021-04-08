@@ -4,6 +4,10 @@ interface ICategoryMap {
 }
 const categoryMap: ICategoryMap[] = [
 	{
+		name: 'TOP',
+		href: '/',
+	},
+	{
 		name: '広告代理',
 		href: '/ad',
 	},
@@ -19,13 +23,13 @@ const categoryMap: ICategoryMap[] = [
 		name: 'システム開発',
 		href: '/system',
 	},
-	{
-		name: 'SAMPLE',
-		href: '/sample',
-	},
-	{
-		name: 'ABOUT',
-		href: '/about',
-	},
+	// {
+	// 	name: 'SAMPLE',
+	// 	href: '/sample',
+	// },
+	// {
+	// 	name: 'ABOUT',
+	// 	href: '/about',
+	// },
 ]
 export default categoryMap

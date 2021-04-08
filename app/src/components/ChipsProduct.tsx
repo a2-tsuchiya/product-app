@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		justifyContent: 'flex-start',
 		flexWrap: 'wrap',
 		listStyle: 'none',
-		padding: theme.spacing(0.5),
+		padding: theme.spacing(1),
 		margin: 0,
 	},
 	chip: {
@@ -27,6 +27,9 @@ interface ChipsProps {
 const ChipsSegment: React.FC<ChipsProps> = ({ products }) => {
 	const classes = useStyles()
 	const { state, dispatch } = useAppContext()
+	const [selected, setSelected] = React.useState<'default' | 'primary'>(
+		'default'
+	)
 
 	/**
 	 * If Product ID in State, delete it, if not, add it
@@ -58,8 +61,10 @@ const ChipsSegment: React.FC<ChipsProps> = ({ products }) => {
 		const ids = sorted.map((item) => item.id)
 		if (state.productIds.length === ids.length) {
 			dispatch({ productIds: { payload: [] } })
+			setSelected('default')
 		} else {
 			dispatch({ productIds: { payload: ids } })
+			setSelected('primary')
 		}
 	}
 
@@ -91,8 +96,8 @@ const ChipsSegment: React.FC<ChipsProps> = ({ products }) => {
 			})}
 			<li key="all">
 				<Chip
-					label="ALL/CLEAR"
-					color="secondary"
+					label="全選択/クリア"
+					color={selected}
 					className={classes.chip}
 					onClick={handleClickAll}
 				/>

@@ -75,7 +75,7 @@ const CardItem: React.FC<CardProps> = ({ item }) => {
 							</CardContent>
 						</div>
 						<CardActions>
-							<Button size="small">MENU</Button>
+							<Button size="large">MENU</Button>
 						</CardActions>
 					</Card>
 				</CardActionArea>
