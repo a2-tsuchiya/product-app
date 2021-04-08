@@ -1,4 +1,5 @@
-import Link from 'next/Link'
+import * as React from 'react'
+import Link from 'next/link'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import categoryMap from 'src/foundations/categoryMap'
 
