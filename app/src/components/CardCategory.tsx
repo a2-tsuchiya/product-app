@@ -37,7 +37,7 @@ const CardCategory = () => {
 			{categoryMap.map((item) => {
 				if (item.href !== '/') {
 					return (
-						<Grid item xs={12} md={2}>
+						<Grid item xs={12} md={2} key={item.href}>
 							<Link href={item.href}>
 								<CardActionArea component="a">
 									<Card>

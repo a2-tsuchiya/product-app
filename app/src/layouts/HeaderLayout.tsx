@@ -54,11 +54,21 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 	const { children, title } = props
 	const { state, dispatch } = useAppContext()
 	const [session, loading] = useSession()
+	const [color, setColor] = React.useState<'default' | 'secondary'>('default')
 
 	const handleClickSignIn = () => signIn()
 	const handleClickSignOut = () => signOut()
 	const handleChange = (_: React.ChangeEvent<{}>, newValue: number) =>
 		dispatch({ tabValue: { payload: newValue } })
+	const handleClickEdit = () => {
+		if (color === 'default') {
+			setColor('secondary')
+			dispatch({ edittable: { payload: true } })
+		} else {
+			setColor('default')
+			dispatch({ edittable: { payload: false } })
+		}
+	}
 
 	if (loading) return <div>Loading...</div>
 
@@ -112,7 +122,11 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 					)}
 				</Toolbar>
 				{session && (
-					<Toolbar>
+					<Toolbar
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+						}}>
 						<Tabs
 							value={state.tabValue}
 							onChange={handleChange}
@@ -125,6 +139,12 @@ const HeaderLayout: React.FC<IHeaderLayout> = (props) => {
 								/>
 							))}
 						</Tabs>
+						<Button
+							variant="contained"
+							color={color}
+							onClick={handleClickEdit}>
+							編集モード
+						</Button>
 					</Toolbar>
 				)}
 			</AppBar>
