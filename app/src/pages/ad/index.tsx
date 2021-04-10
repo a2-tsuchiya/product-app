@@ -44,6 +44,7 @@ const AdPage: React.FC<IAdPage> = (props) => {
 		{
 			initialData: props.segments,
 			revalidateOnFocus: false,
+			refreshInterval: 1000,
 		}
 	)
 	// State Products
@@ -158,7 +159,7 @@ export const getStaticProps: GetStaticProps = async () => {
 				products,
 				bujinessItems,
 			},
-			revalidate: 180,
+			revalidate: 120, //sec
 		}
 	} catch (err) {
 		return { props: { errors: err.message } }
